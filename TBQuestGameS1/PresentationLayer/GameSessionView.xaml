@@ -1,0 +1,564 @@
+﻿<Window x:Class="TBQuestGame.PresentationLayer.GameSessionView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TBQuestGame.PresentationLayer"
+        mc:Ignorable="d"
+        Title="TBQuest Game" Height="750" Width="850">
+    <Window.Resources>
+        <!--Changes the toggle button to be used with expander-->
+        <ControlTemplate x:Key="SimpleExpanderButtonTemp"
+                         TargetType="{x:Type ToggleButton}">
+            <!--Sets the background of dropdown same as parent-->
+            <Border x:Name="SimpleExpanderButtonTemp"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Padding="{TemplateBinding Padding}"
+                    >
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle 
+                        Fill="Transparent"
+                        Grid.ColumnSpan="2"/>
+                    <Ellipse Name="Circle"
+                             Grid.Column="0"
+                             Stroke="DarkGray"
+                             Width="20"
+                             Height="20"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             />
+                    <Path  x:Name="Sign"
+                           Grid.Column="0"
+                           Data="M 0,5 H 10 M 5,0 V 10 Z"
+                           Stroke="#FF666666"
+                           Width="10"
+                           Height="10"
+                           StrokeThickness="2"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           RenderTransformOrigin="0.5,0.5">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0"/>
+                        </Path.RenderTransform>
+                    </Path>
+                    <ContentPresenter x:Name="HeaderContent"
+                                      Grid.Column="1"
+                                      Margin="4,0,0,0"
+                                      ContentSource="Content"/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <!--Change the sign to minus when toggled-->
+                <Trigger Property="IsChecked"
+                         Value="True">
+                    <Setter Property="Data"
+                            TargetName="Sign"
+                            Value="M 0,5 H 10 Z"/>
+                </Trigger>
+
+                <!-- MouseOver, Pressed behaviours-->
+                <Trigger Property="IsMouseOver"
+                         Value="true">
+                    <Setter Property="Stroke"
+                            Value="#FF3C7FB1"
+                            TargetName="Circle"/>
+                    <Setter Property="Stroke"
+                             Value="#222"
+                             TargetName="Sign"/>
+                </Trigger>
+
+                <!--Icon pressed behaviours-->
+                <Trigger Property="IsPressed"
+                         Value="true">
+                    <Setter Property="Stroke"
+                            Value="#FF526C7B"
+                            TargetName="Circle"/>
+                    <Setter Property="StrokeThickness"
+                            Value="1.5"
+                            TargetName="Circle"/>
+                    <Setter Property="Stroke"
+                            Value="#FF003366"
+                            TargetName="Sign"/>
+
+                </Trigger>
+
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- Simple Expander Template-->
+        <ControlTemplate x:Key="SimpleExpanderTemp" TargetType="{x:Type Expander}">
+            <DockPanel>
+                <ToggleButton x:Name="ExpanderButton"
+
+                      DockPanel.Dock="Top"
+
+                      Template="{StaticResource SimpleExpanderButtonTemp}"
+
+                      Content="{TemplateBinding Header}"
+
+                      IsChecked="{Binding Path=IsExpanded, 
+                      RelativeSource={RelativeSource TemplatedParent}}"
+
+                      OverridesDefaultStyle="True"
+
+                      Padding="1.5,0">
+                </ToggleButton>
+                <ContentPresenter x:Name="ExpanderContent"
+
+                          Visibility="Collapsed"
+
+                          DockPanel.Dock="Bottom"/>
+            </DockPanel>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsExpanded" Value="True">
+                    <Setter TargetName="ExpanderContent" 
+
+              Property="Visibility" Value="Visible"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!--Stretch out content tempelate-->
+        <ControlTemplate x:Key="StretchyExpanderTemp" TargetType="{x:Type Expander}">
+            <DockPanel>
+                <ToggleButton x:Name="ExpanderButton"
+
+                      DockPanel.Dock="Top"
+
+                      Template="{StaticResource SimpleExpanderButtonTemp}"
+
+                      Content="{TemplateBinding Header}"
+
+                      IsChecked="{Binding Path=IsExpanded, 
+                      RelativeSource={RelativeSource TemplatedParent}}"
+
+                      OverridesDefaultStyle="True"
+
+                      Padding="1.5,0">
+                </ToggleButton>
+                <ContentPresenter>
+                    <ContentPresenter.LayoutTransform>
+                        <ScaleTransform ScaleY="0"/>
+                    </ContentPresenter.LayoutTransform>
+                </ContentPresenter>
+            </DockPanel>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsExpanded" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ExpanderContent"
+
+                             Storyboard.TargetProperty=
+                               "(ContentPresenter.LayoutTransform).(ScaleTransform.ScaleY)"
+
+                             To="1"
+
+                             Duration="0:0:0.4"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ExpanderContent"
+
+                             Storyboard.TargetProperty=
+                               "(ContentPresenter.LayoutTransform).(ScaleTransform.ScaleY)"
+
+                             To="0"
+
+                             Duration="0:0:0.4"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="BorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="MediumSlateBlue"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Opacity" Value=".9"/>
+            <Setter Property="CornerRadius" Value="0 6000 0 0"/>
+        </Style>
+
+
+        <Style x:Key="TextBoxBorder" TargetType="Border">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Margin" Value="0 0 0 2"/>
+        </Style>
+
+        <Style x:Key="TextBoxStyle1" TargetType="TextBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="LilyUPC"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="3,0,0,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle1" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+
+        </Style>
+
+        <Style x:Key="LabelStyle1" TargetType="Label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style x:Key="MainPanelTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Foreground" Value="Blue"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Padding" Value="3,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="WhiteSmoke"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border 
+                            Background="{TemplateBinding Background}"   
+                            x:Name="Bd" 
+                            BorderBrush="Black"  
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+
+
+    </Window.Resources>
+    <Grid Background="Black">
+        <Border Style ="{StaticResource BorderStyle}" Background="MidnightBlue"  CornerRadius="60 800 00 0">
+            <Grid ShowGridLines="False">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="3*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Border 
+                    Style="{StaticResource BorderStyle}" CornerRadius="0 600 0 0" BorderThickness="3 0 0 0">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+
+                                <Label Style="{StaticResource LabelStyle1}" FontWeight="ExtraBold" Foreground="AntiqueWhite" FontSize="16" FontStretch="Expanded"  HorizontalAlignment="Center" Content="Player Info" HorizontalContentAlignment="Right"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0">
+                                <Label Style="{StaticResource LabelStyle1}" FontWeight="Bold" HorizontalAlignment="Right" Content="Name" HorizontalContentAlignment="Right"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Border 
+                                    Style="{StaticResource TextBoxBorder}" Width="130">
+                                    <TextBox Style="{StaticResource TextBoxStyle1}"
+                                             Text="{Binding Player.Name}" TextWrapping="Wrap" HorizontalAlignment="Center" Width="110" HorizontalContentAlignment="Right"/>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="0">
+                                <Label Style="{StaticResource LabelStyle1}"  
+                                            FontWeight="Bold" HorizontalAlignment="Right" Content="Speciality" HorizontalContentAlignment="Right"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="1">
+                                <Border 
+                                    Style="{StaticResource TextBoxBorder}" Width="130">
+                                    <TextBox Style="{StaticResource TextBoxStyle1}" Text="{Binding Player.PlayerSpeciality}" TextWrapping="Wrap" HorizontalAlignment="Center" Width="110" HorizontalContentAlignment="Right" />
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Row="3" Grid.Column="0">
+                                <Label Style="{StaticResource LabelStyle1}"  
+                                            FontWeight="Bold" HorizontalAlignment="Right" Content="XP" HorizontalContentAlignment="Right"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="3" Grid.Column="1">
+                                <Border 
+                                    Style="{StaticResource TextBoxBorder}" Width="130">
+                                    <TextBox Style="{StaticResource TextBoxStyle1}" Text="{Binding Player.ExperiencePoints}" TextWrapping="Wrap" HorizontalAlignment="Center" Width="110" HorizontalContentAlignment="Right" />
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Row="4" Grid.Column="0">
+                                <Label Style="{StaticResource LabelStyle1}"  
+                                            FontWeight="Bold" HorizontalAlignment="Right" Content="HP" HorizontalContentAlignment="Right"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="4" Grid.Column="1">
+                                <Border 
+                                    Style="{StaticResource TextBoxBorder}" Width="130">
+                                    <TextBox Style="{StaticResource TextBoxStyle1}" Text="{Binding Player.Health}" TextWrapping="Wrap" HorizontalAlignment="Center" Width="110" HorizontalContentAlignment="Right" />
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <DockPanel Grid.Column="1">
+                        <Border 
+                    Style="{StaticResource BorderStyle}" CornerRadius="0 0 0 900" BorderThickness="3 0 0 0">
+                            <StackPanel 
+                        Orientation="Vertical"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top">
+                                <StackPanel>
+                                    <Label Style="{StaticResource LabelStyle1}"  FontWeight="ExtraBold" FontSize="20" HorizontalAlignment="Center" Content="Current Location"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Border 
+                                    Style="{StaticResource TextBoxBorder}">
+                                        <TextBox Style="{StaticResource TextBoxStyle1}"
+                                             Text="Need to Bind" HorizontalAlignment="Center" Width="160"/>
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel>
+                                    <StackPanel>
+                                        <Label Style="{StaticResource LabelStyle1}" FontWeight="ExtraBold" FontSize="20"  
+                                            Content="Location Toxicity"/>
+                                    </StackPanel>
+
+                                    <Border 
+                                    Style="{StaticResource TextBoxBorder}">
+                                        <TextBox Style="{StaticResource TextBoxStyle1}" Text="Need to Bind" HorizontalAlignment="Center" Width="160"/>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DockPanel>
+                    <DockPanel Grid.Column="2">
+                        <Border Style="{StaticResource BorderStyle}" CornerRadius="0 0 0 0" BorderThickness="0 0 0 0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
+
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+
+                                    <Label Style="{StaticResource LabelStyle1}" FontWeight="ExtraBold" FontSize="16" Foreground="AntiqueWhite" FontStretch="Expanded"  HorizontalAlignment="Center" Content="Proxy Info" HorizontalContentAlignment="Right"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="1">
+                                    <Label Style="{StaticResource LabelStyle1}" FontWeight="Bold" HorizontalAlignment="Left" Content="Robot/Exosuit" HorizontalContentAlignment="Left"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Border 
+                                    Style="{StaticResource TextBoxBorder}" Width="130">
+                                        <TextBox Style="{StaticResource TextBoxStyle1}"
+                                             Text="Need to bind dynamically" HorizontalAlignment="Center" Width="110" HorizontalContentAlignment="Left"/>
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="1">
+                                    <Label Style="{StaticResource LabelStyle1}"  
+                                            FontWeight="Bold" HorizontalAlignment="Left" Content="XP" HorizontalContentAlignment="Left"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="0">
+                                    <Border 
+                                    Style="{StaticResource TextBoxBorder}" Width="130">
+                                        <TextBox Style="{StaticResource TextBoxStyle1}" TextWrapping="Wrap"  HorizontalAlignment="Center" Width="110" HorizontalContentAlignment="Left" />
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel Grid.Row="3" Grid.Column="1">
+                                    <Label Style="{StaticResource LabelStyle1}"  
+                                            FontWeight="Bold" HorizontalAlignment="Left" Content="Armor" HorizontalContentAlignment="Left"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="3" Grid.Column="0">
+                                    <Border 
+                                    Style="{StaticResource TextBoxBorder}" Width="130">
+                                        <TextBox Style="{StaticResource TextBoxStyle1}" Text="{Binding Robot.Armor}" HorizontalAlignment="Center" HorizontalContentAlignment="Left" />
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DockPanel>
+
+                </Grid>
+                <Border Grid.Row="1" Style="{StaticResource BorderStyle}" CornerRadius="60" BorderThickness="3 1 0 1" Margin="0,0,0,0" Background="Black">
+                    <Grid  Background="Black">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="2*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" BorderBrush="MidnightBlue" CornerRadius="80" Height="240" Width="650" BorderThickness="2" Background="Lavender">
+
+                            <StackPanel Orientation="Vertical">
+                                <Label  Content="Story Dialog" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black">
+
+                                </Label>
+                                <TextBox Height="180" Width="600" Text="{Binding MessageDisplay, Mode=OneWay}" TextWrapping="Wrap">
+
+                                </TextBox>
+                            </StackPanel>
+
+                        </Border>
+
+                        <Border Grid.Row="1" BorderBrush="MidnightBlue" CornerRadius="80" Height="160" Width="650" BorderThickness="2" Background="Lavender">
+                            <StackPanel Grid.Row="1" Orientation="Vertical">
+                                <Label Grid.Row="1" Content="Action Dialog" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black">
+                                </Label>
+                                <TextBox Height="100" Width="600">
+
+                                </TextBox>
+
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+                <Grid Grid.Row="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel Grid.Column="0" >
+                        <Border Style="{StaticResource BorderStyle}" CornerRadius="180 180 180 180" BorderThickness="3 3 3 3">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Button Content="Previous Area" Grid.Column="0" Style="{StaticResource ButtonStyle1}" FontSize="14" Height="40px" Width="150px" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="1" BorderBrush="White" x:Name="Previous_Area_Button">
+
+                                </Button>
+                            </StackPanel>
+
+                        </Border>
+                    </DockPanel>
+
+                    <DockPanel Grid.Column="1" >
+                        <Border Style="{StaticResource BorderStyle}" CornerRadius="180 180 180 180" BorderThickness="3 3 3 3">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Button Content="Next Area"  Style="{StaticResource ButtonStyle1}" FontSize="14" Height="40px" Width="150px" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="Next_Area_Button" BorderBrush="White">
+
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </DockPanel>
+
+                    <DockPanel Grid.Column="2">
+                        <Border Style="{StaticResource BorderStyle}" CornerRadius="180 180 180 180" BorderThickness="3 3 3 3">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Button Content="Fast Travel"  Style="{StaticResource ButtonStyle1}" FontSize="14" Height="40px" Width="150px" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="Fast_Travel_Button" BorderBrush="White">
+
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </DockPanel>
+
+                </Grid>
+
+                <Grid Grid.Column="1" Grid.RowSpan="3" Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Margin="0" >
+                        <Border Style="{StaticResource BorderStyle}" CornerRadius="0 4 0 0" BorderThickness="1 0 3 1">
+                            <Expander Template="{StaticResource SimpleExpanderTemp}"  Foreground="AntiqueWhite" FontSize="16" Header="Player Inventory" Width="148" >
+                                <StackPanel>
+                                    <Label
+                                        Style="{StaticResource LabelStyle1}"
+                                        Content="Player Inventory"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"/>
+                                </StackPanel>
+
+                            </Expander>
+                        </Border>
+                    </DockPanel>
+
+
+                    <DockPanel Grid.Row="1" Margin="0">
+                        <Border Style="{StaticResource BorderStyle}" CornerRadius="0" BorderThickness="1 0 3 1" Margin="0" Padding="0">
+                            <Expander Template="{StaticResource SimpleExpanderTemp}" Header="Speciality Inventory" Margin="0" Padding="0" Foreground="AntiqueWhite" FontSize="16">
+                                <StackPanel>
+                                    <Label
+                                        Content="Speciality Inventory"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"/>
+                                </StackPanel>
+
+
+                            </Expander>
+                        </Border>
+                    </DockPanel>
+
+                    <DockPanel Grid.Row ="2" Margin="0">
+                        <Border Style="{StaticResource BorderStyle}" Margin="0" Padding="0" CornerRadius="0 0 0 0" BorderThickness="1 0 3 1">
+                            <Expander Template="{StaticResource SimpleExpanderTemp}" Header="Quest Items" Foreground="AntiqueWhite" FontSize="16">
+                                <Label
+                                        Content="Quest Item Inventory"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"/>
+                            </Expander>
+                        </Border>
+
+                    </DockPanel>
+
+                </Grid>
+
+
+
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

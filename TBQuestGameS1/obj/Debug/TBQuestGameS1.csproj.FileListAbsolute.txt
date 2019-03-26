@@ -1,0 +1,17 @@
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1.csprojAssemblyReference.cache
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\PresentationLayer\GameSessionView.g.cs
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\PresentationLayer\PlayerSetupView.g.cs
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\App.g.cs
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1_MarkupCompile.cache
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1_MarkupCompile.lref
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\bin\Debug\TBQuestGameS1.exe.config
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\bin\Debug\TBQuestGameS1.exe
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\bin\Debug\TBQuestGameS1.pdb
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\PresentationLayer\GameSessionView.baml
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\PresentationLayer\PlayerSetupView.baml
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1.g.resources
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1.Properties.Resources.resources
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1.csproj.GenerateResource.cache
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1.csproj.CoreCompileInputs.cache
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1.exe
+C:\Users\cjkel\source\repos\TBQuestGame\TBQuestGameS1\obj\Debug\TBQuestGameS1.pdb
