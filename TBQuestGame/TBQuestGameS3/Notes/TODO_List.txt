@@ -1,0 +1,8 @@
+********Task Notes for TBQuestGame.sln***********
+
+Need to bind robot/cyberkinetics dynamically to view depending on what the player selects.
+
+Need to create each locations description and properties.
+
+Need to link map to view.
+

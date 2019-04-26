@@ -1,0 +1,131 @@
+﻿<Window x:Class="TBQuestGame.PresentationLayer.PlayerSetupView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TBQuestGame.PresentationLayer"
+        mc:Ignorable="d"
+        Title="Player Setup" Height="350" Width="400">
+    <Window.Resources>
+
+        <Style x:Key="MainPanelComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Width" Value="100"/>
+        </Style>
+        <Style x:Key="BorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="MediumSlateBlue"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Opacity" Value="1"/>
+            <Setter Property="CornerRadius" Value="600 600 6000 6000"/>
+        </Style>
+
+
+        <Style x:Key="TextBoxBorder" TargetType="Border">
+            <Setter Property="Width" Value="160"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Margin" Value="3 0 0 2"/>
+        </Style>
+
+        <Style x:Key="TextBoxStyle1" TargetType="TextBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="LilyUPC"/>
+            <Setter Property="Width" Value="140"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="3,0,0,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle1" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+
+        </Style>
+
+        <Style x:Key="LabelStyle1" TargetType="Label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+    </Window.Resources>
+    <Grid Background="MidnightBlue">
+        <Border
+            Margin="10"
+            Style="{StaticResource BorderStyle}" >
+            <StackPanel
+            Grid.Column="0"
+            Orientation="Vertical"
+            HorizontalAlignment="Center">
+                <Label
+                    Content="Player Setup" 
+                    HorizontalAlignment="Center"
+                    Margin="20"
+                    FontSize="20"
+                    Style="{DynamicResource LabelStyle1}"/>
+                <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                    <Label Content="Name" Style="{StaticResource LabelStyle1}"/>
+                    <Border Style="{StaticResource TextBoxBorder}">
+                    <TextBox Name="NameTextBox" Style="{StaticResource TextBoxStyle1}"/>
+                    </Border>
+                </StackPanel>
+                <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                    <Label Content="Speciality" Style="{StaticResource LabelStyle1}"/>
+                    <Border Style="{StaticResource TextBoxBorder}" >
+                        <ComboBox
+                        Name="ComboBox1"
+                        SelectedIndex="0"
+                            Width="120"
+                        />
+                    </Border>
+                </StackPanel>
+                <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                    <Label Content="Exosuit/Robot Name" Style="{StaticResource LabelStyle1}" FontSize="10"/>
+                    <Border Style="{StaticResource TextBoxBorder}">
+                    <TextBox Name="RobotNameTextBox" Style="{StaticResource TextBoxStyle1}"/>
+                    </Border>
+                </StackPanel>
+                
+                <Button
+                    Name="OkButton"
+                    Margin="20"
+                    Content="OK"
+                    Style="{StaticResource ButtonStyle1}"
+                    Click="OkButton_Click"/>
+                <Border  Width="230" Height="70" BorderBrush="White" CornerRadius="100">
+                    <TextBlock 
+                    Name="ErrorMessageTextBlock"
+                    Background="Black"
+                        Width="220"
+                        TextWrapping="Wrap"
+                    Foreground="Red"/>
+                </Border>
+            </StackPanel>
+
+        </Border>
+        
+
+    </Grid>
+</Window>
