@@ -8,7 +8,7 @@ namespace TBQuestGame.Models
 {
     public class Military : Npc, ISpeak, IBattle
     {
-        Random random = new Random();
+        Random r = new Random();
 
         private const int DEFENDER_DAMAGE_ADJUSTMENT = 10;
         private const int MAXIMUM_RETREAT_DAMAGE = 10;
@@ -67,7 +67,7 @@ namespace TBQuestGame.Models
         /// </summary>
         ///<returns> message text </returns>
 
-        private string GetMessage()
+        private string GetMessages()
         {
             Random r = new Random();
             int messageIndex = r.Next(0, Messages.Count());
@@ -75,7 +75,7 @@ namespace TBQuestGame.Models
         }
 
         #region BATTLE METHODS
-        public double Attack()
+        public int Attack()
         {
             int hitPoints = random.Next(CurrentWeapon.MinimumDamage, CurrentWeapon.MaximumDamage) * SkillLevel;
 

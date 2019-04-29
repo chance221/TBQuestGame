@@ -308,6 +308,66 @@ namespace TBQuestGame.Models
         }
 
         
+        /// <summary>
+        /// return hit points [0 - 100] based on the player's weapon and skill level
+        /// </summary>
+        /// <returns>hit points 0-100</returns>
+        public int Attack()
+        {
+            int hitPoints = random.Next(CurrentWeapon.MinimumDamage, CurrentWeapon.MaximumDamage) * _skillLevel;
+
+            if (hitPoints <= 100)
+            {
+                return hitPoints;
+            }
+            else
+            {
+                return 100;
+            }
+        }
+
+        
+        /// <summary>
+        /// return hit points [0 - 100] based on the player's weapon and skill level
+        /// adjusted to deliver more damage when first attacked
+        /// </summary>
+        /// <returns>hit points 0-100</returns>
+        public int Defend()
+        {
+            int hitPoints = (random.Next(CurrentWeapon.MinimumDamage, CurrentWeapon.MaximumDamage) * _skillLevel) - DEFENDER_DAMAGE_ADJUSTMENT;
+
+            if (hitPoints >= 0 && hitPoints <= 100)
+            {
+                return hitPoints;
+            }
+            else if (hitPoints > 100)
+            {
+                return 100;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        
+        /// <summary>
+        /// return hit points [0 - 100] based on the player's skill level
+        /// </summary>
+        /// <returns>hit points 0-100</returns>
+        public int Retreat()
+        {
+            int hitpoints = _skillLevel * MAXIMUM_RETREAT_DAMAGE;
+
+            if (hitpoints <= 100)
+            {
+                return hitpoints;
+            }
+            else
+            {
+                return 100;
+            }
+        }
 
         #endregion
 

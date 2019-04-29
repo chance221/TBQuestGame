@@ -20,6 +20,8 @@ namespace TBQuestGame.BusinessLayer
         private List<string> _messages;
         ExoSuit _exoSuit = new ExoSuit();
         Robot _robot = new Robot();
+        GameMapCoordinates _initialLocationCoordinates;
+        Map _gameMap;
         
 
         public GameBusiness()//constructor
@@ -36,6 +38,8 @@ namespace TBQuestGame.BusinessLayer
         private void InitializeDataSet()
         {
             _messages = GameData.InitialMessages();
+            _gameMap = GameData.GameMap();
+            _initialLocationCoordinates = GameData.InitialGameMapLocation();
             
         }
 
@@ -80,12 +84,13 @@ namespace TBQuestGame.BusinessLayer
                 _player.ExperiencePoints = 0;
                 _player.Health = 100;
                 _player.Lives = 4;
+                _player.SkillLevel = 8;
 
 
                 _player.SpecialArmor = Player.Armor.Low; 
                 _player.Inventory = new ObservableCollection<GameItemQuantity>()
                 {
-                    new GameItemQuantity(GameItemById(1001), 1),
+                    
                     new GameItemQuantity(GameItemById(2010), 2)
                 };
 

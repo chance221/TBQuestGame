@@ -21,7 +21,7 @@ namespace TBQuestGame.Models
             }
 
         }
-
+        #region CONSTRUCTORS
         public Npc()
         {
 
@@ -45,7 +45,7 @@ namespace TBQuestGame.Models
             IsHuman = isHuman;
             Description = description;
         }
-
+        #endregion
         protected abstract string InformationText();
     }
 }

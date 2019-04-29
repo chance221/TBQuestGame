@@ -23,7 +23,7 @@ namespace TBQuestGame.Models
         protected int _age;
         protected bool _isHuman;
         protected double _exp;
-        protected Random randm = new Random();
+        protected Random random = new Random();
         #endregion
 
         #region PROPERTIES

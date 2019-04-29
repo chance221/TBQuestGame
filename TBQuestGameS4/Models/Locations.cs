@@ -36,9 +36,17 @@ namespace TBQuestGame.Models
         private Toxicity _toxicity;
         private int _requiredRelicId;
         private ObservableCollection<GameItemQuantity> _gameItems;
-        
+        private ObservableCollection<Npc> _npcs;
 
-        
+        public ObservableCollection<Npc> Npcs
+        {
+            get { return _npcs; }
+            set { _npcs = value; }
+        }
+
+
+
+
 
         #endregion
 

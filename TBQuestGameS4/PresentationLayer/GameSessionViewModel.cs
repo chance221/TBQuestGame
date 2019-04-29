@@ -8,7 +8,7 @@ using System.Windows.Data;
 using TBQuestGame.Models;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
-
+using System.Windows;
 namespace TBQuestGame.PresentationLayer
 {
     // When you create a view model it ALWAYS goes to the constructor first so if you need informatin to be passed into the view model before launching put it in the constructor
@@ -29,45 +29,13 @@ namespace TBQuestGame.PresentationLayer
         private Location _currentLocation;
         private string _currentLocationName;
         private Location _upLocation, _downLocation, _previousLocation, _nextLocation;
-
         private ObservableCollection<Location> _fastTravelLocations;
         private GameItemQuantity _currentGameItem;
         private Weapon _currentWeapon;
         private string _currentLocationInformation;
         private List<Location> _allMapLocations;
         private Random random = new Random();
-
-        //public List<Location> AllMapLocations
-        //{
-        //    get
-        //    {
-
-        //        List<Location> allMapLocations = new List<Location>();
-        //        Location mapLocation = new Location();
-
-        //        for (int row = 0; row < _mapLocations[row, column]; row++)
-        //        {
-        //            for (int column = 0; column < _maxColumns; column++)
-        //            {
-        //                mapLocation = _mapLocations[row, column];
-        //                allMapLocations.Add(mapLocation);
-        //            }
-        //        }
-        //        return allMapLocations;
-        //    }
-        //    set { _allMapLocations = value; }
-        //}
-
-
-
-
-
-
-
-
-
-
-
+        private Npc _currentNpc;
 
         #endregion
 
@@ -84,7 +52,7 @@ namespace TBQuestGame.PresentationLayer
 
         public string MessageDisplay
         {
-            get { return string.Join("\n\n", _currentLocation.Message); }
+            get { return _currentLocation.Message; }
 
         }
 
@@ -94,15 +62,6 @@ namespace TBQuestGame.PresentationLayer
             get { return _gameMap; }
             set { _gameMap = value; }
         }
-
-
-
-        //public Locations Location
-        //{
-        //    get { return _locations; }
-        //    set { _locations = value; }
-        //}
-
 
         public Location CurrentLocation
         {
@@ -125,6 +84,15 @@ namespace TBQuestGame.PresentationLayer
                 _upLocation = value;
                 OnPropertyChanged(nameof(UpLocation));
                 OnPropertyChanged(nameof(HasUpLocation));
+            }
+        }
+
+        public Player.Armor Armor
+        {
+            get { return _player.SpecialArmor; }
+            set
+            {
+                OnPropertyChanged(nameof(Player.Armor));
             }
         }
 
@@ -173,15 +141,6 @@ namespace TBQuestGame.PresentationLayer
             }
         }
 
-
-
-        //public List<string> AccessibleLocations
-        //{
-        //    get { return _accessibleLocations; }
-        //    set { _accessibleLocations = value; }
-        //}
-
-
         public string CurrentLocationName
         {
             get { return _currentLocationName; }
@@ -216,13 +175,35 @@ namespace TBQuestGame.PresentationLayer
             }
         }
 
-       
+        public Npc CurrentNpc
+        {
+            get { return _currentNpc; }
+            set
+            {
+                _currentNpc = value;
+                OnPropertyChanged(nameof(_currentNpc));
+            }
+        }
+
+        public GameItemQuantity CurrentGameItem
+        {
+            get { return _currentGameItem; }
+            set
+            {
+                _currentGameItem = value;
+                OnPropertyChanged(nameof(CurrentGameItem));
+                if(_currentGameItem != null && _currentGameItem.GameItem is Weapon)
+                {
+                    _player.CurrentWeapon = _currentGameItem.GameItem as Weapon;
+                }
+            }
+        }
 
         #endregion
 
         #region CONSTRUCTORS
 
-        
+
 
         public GameSessionViewModel(
             Player player,
@@ -267,9 +248,6 @@ namespace TBQuestGame.PresentationLayer
             _player.UpdateInventoryCategories();
             UpdateFastTravelLocations();
         }
-
-
-
 
         public void MoveUp()
         {
@@ -318,8 +296,7 @@ namespace TBQuestGame.PresentationLayer
                 UpdateFastTravelLocations();
             }
         }
-
-
+        
         //if player has previously visited location then add it to the list of FastTravel Locations
         private void UpdateFastTravelLocations()
         {
@@ -330,20 +307,7 @@ namespace TBQuestGame.PresentationLayer
             }
         }
 
-        public GameItemQuantity CurrentGameItem
-        {
-            get { return _currentGameItem; }
-            set
-            {
-                _currentGameItem = value;
-                OnPropertyChanged(nameof(CurrentGameItem));
-                if (_currentGameItem != null && _currentGameItem.GameItem is Weapon)
-                {
-                    _player.CurrentWeapon = _currentGameItem.GameItem as Weapon;
-                }
-            }
-        }
-
+        
 
         /// <summary>
         /// add a new item to the players inventory
@@ -425,9 +389,26 @@ namespace TBQuestGame.PresentationLayer
                 case Relic relic:
                     ProcessRelicUse(relic);
                     break;
+                case Treasure treasure:
+                    ProcessArmorUpgrade(treasure);
+                    break;
                 default:
                     break;
             }
+        }
+
+        private void ProcessArmorUpgrade(Treasure treasure)
+        {
+            if (Player.SpecialArmor == Player.Armor.Low)
+            {
+                _player.SpecialArmor = Player.Armor.Medium;
+            }
+
+            if (Player.SpecialArmor == Player.Armor.Medium)
+            {
+                _player.SpecialArmor = Player.Armor.High;
+            }
+            
         }
 
         /// <summary>
@@ -472,6 +453,48 @@ namespace TBQuestGame.PresentationLayer
             }
         }
 
+        /// <summary>
+        /// handle the attack event in the view.
+        /// </summary>
+        public void OnPlayerAttack()
+        {
+            _player.BattleMode = BattleModeName.ATTACK;
+            Battle();
+        }
+
+        /// <summary>
+        /// handle the defend event in the view.
+        /// </summary>
+        public void OnPlayerDefend()
+        {
+            _player.BattleMode = BattleModeName.DEFEND;
+            Battle();
+        }
+
+        /// <summary>
+        /// handle the retreat event in the view.
+        /// </summary>
+        public void OnPlayerRetreat()
+        {
+            _player.BattleMode = BattleModeName.RETREAT;
+            Battle();
+        }
+
+        /// <summary>
+        /// player chooses to exit game
+        /// </summary>
+        private void QuiteApplication()
+        {
+            Environment.Exit(0);
+        }
+
+        /// <summary>
+        /// player chooses to reset game
+        /// </summary>
+        private void ResetPlayer()
+        {
+            Environment.Exit(0);
+        }
 
         //public bool HasUpLocation
         //{
@@ -612,7 +635,7 @@ namespace TBQuestGame.PresentationLayer
 
         //    for (int index = 0; index < _messages.Count; index++) // Adds the message to the list then goes through each message in the list and adds a time stamp
         //    {
-        //        lifoMessages.Add($" <T:{GameTime().ToString(@"hh\:mm\:ss")}> " + _messages[index]);
+        //        lifoMessages.Add( _messages[index]);
         //    }
 
         //    lifoMessages.Reverse(); // ensures most latest message in list will be displayed at the top
@@ -629,6 +652,39 @@ namespace TBQuestGame.PresentationLayer
             return DateTime.Now - _gameStartTime;
         }
 
+
+        /// <summary>
+        /// handle the speak to event in the view
+        /// </summary>
+        public void OnPlayerTalkTo()
+        {
+            if (CurrentNpc != null && CurrentNpc is ISpeak)
+            {
+                ISpeak speakingNpc = CurrentNpc as ISpeak;
+                CurrentLocationInformation = speakingNpc.Speak();
+            }
+        }
+
+
+        private BattleModeName NpcBattleResponse()
+        {
+            BattleModeName npcBattleResponse = BattleModeName.RETREAT;
+
+            switch (DieRoll(3))
+            {
+                case 1:
+                    npcBattleResponse = BattleModeName.ATTACK;
+                    break;
+                case 2:
+                    npcBattleResponse = BattleModeName.DEFEND;
+                    break;
+                case 3:
+                    npcBattleResponse = BattleModeName.RETREAT;
+                    break;
+            }
+            return npcBattleResponse;
+        }
+
         #region HELPER METHODS
 
         private int DieRoll(int sides)
@@ -636,7 +692,153 @@ namespace TBQuestGame.PresentationLayer
             return random.Next(1, sides + 1);
         }
 
+        /// <summary>
+        /// calculate player hit points based on battle mode
+        /// </summary>
+        /// <returns>player hit points</returns>
+        private int CalculatePlayerHitPoints()
+        {
+            int playerHitPoints = 0;
 
+            switch (_player.BattleMode)
+            {
+                case BattleModeName.ATTACK:
+                    playerHitPoints = _player.Attack();
+                    break;
+                case BattleModeName.DEFEND:
+                    playerHitPoints = _player.Defend();
+                    break;
+                case BattleModeName.RETREAT:
+                    playerHitPoints = _player.Retreat();
+                    break;
+            }
+
+            return playerHitPoints;
+        }
+
+        /// <summary>
+        /// calculate NPC hit points based on battle mode
+        /// </summary>
+        /// <returns>NPC hit points</returns>
+        private int CalculateNpcHitPoints(IBattle battleNpc)
+        {
+            int battleNpcHitPoints = 0;
+
+            switch (NpcBattleResponse())
+            {
+                case BattleModeName.ATTACK:
+                    battleNpcHitPoints = battleNpc.Attack();
+                    break;
+                case BattleModeName.DEFEND:
+                    battleNpcHitPoints = battleNpc.Defend();
+                    break;
+                case BattleModeName.RETREAT:
+                    battleNpcHitPoints = battleNpc.Retreat();
+                    break;
+            }
+            if(_player.SpecialArmor == Player.Armor.High)
+            {
+                battleNpcHitPoints -= 2;
+            }
+            if (_player.SpecialArmor == Player.Armor.High)
+            {
+                battleNpcHitPoints -= 1;
+            }
+           
+            return battleNpcHitPoints;
+        }
+
+        /// <summary>
+        /// process the outcome of a battle with an NPC
+        /// </summary>
+        private void Battle()
+        {
+            //
+            // check to see if an NPC can battle
+            //
+            if (_currentNpc is IBattle)
+            {
+                IBattle battleNpc = _currentNpc as IBattle;
+                int playerHitPoints = 0;
+                int battleNpcHitPoints = 0;
+                string battleInformation = "";
+
+                //
+                // calculate hit points if the player and NPC have weapons
+                //
+                if (_player.CurrentWeapon != null)
+                {
+                    playerHitPoints = CalculatePlayerHitPoints();
+                }
+                else
+                {
+                    battleInformation = "It appears you are entering into battle without a weapon." + Environment.NewLine;
+                }
+
+                if (battleNpc.CurrentWeapon != null)
+                {
+                    battleNpcHitPoints = CalculateNpcHitPoints(battleNpc);
+                }
+                else
+                {
+                    battleInformation = $"It appears you are entering into battle with {_currentNpc.Name} who has no weapon." + Environment.NewLine;
+                }
+
+                //
+                // build out the text for the current location information
+                //
+                battleInformation +=
+                    $"Player: {_player.BattleMode}     Hit Points: {playerHitPoints}" + Environment.NewLine +
+                    $"NPC: {battleNpc.BattleMode}     Hit Points: {battleNpcHitPoints}" + Environment.NewLine;
+
+                //
+                // determine results of battle
+                //
+                if (playerHitPoints >= battleNpcHitPoints)
+                {
+                    battleInformation += $"You have slain {_currentNpc.Name}.";
+                    _currentLocation.Npcs.Remove(_currentNpc);
+                }
+                else
+                {
+                    battleInformation += $"You have been slain by {_currentNpc.Name}.";
+                    _player.Health -= battleNpcHitPoints;
+                }
+
+                CurrentLocationInformation = battleInformation;
+                if (_player.Lives <= 0) OnPlayerDies("You have been slain and have no lives left.");
+            }
+            else
+            {
+                CurrentLocationInformation = "The current NPC was not trying to fight. He sues you for Damages and you loose 10 Coins.";
+                _player.Wealth -= 100;
+            }
+
+        }
+
+        /// <summary>
+        /// process player dies with option to reset and play again
+        /// </summary>
+        /// <param name="message">message regarding player death</param>
+        private void OnPlayerDies(string message)
+        {
+            string messagetext = message +
+                "\n\nWould you like to play again?";
+
+            string titleText = "Death";
+            MessageBoxButton button = MessageBoxButton.YesNo;
+            MessageBoxResult result = MessageBox.Show(messagetext, titleText, button);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    ResetPlayer();
+                    break;
+                case MessageBoxResult.No:
+                    QuiteApplication();
+                    break;
+            }
+        }
         #endregion
 
 
